@@ -26978,9 +26978,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"smazone@workspace:examples/one-zero-cf":
+"one-zero-cf@workspace:examples/one-zero-cf":
   version: 0.0.0-use.local
-  resolution: "smazone@workspace:examples/one-zero-cf"
+  resolution: "one-zero-cf@workspace:examples/one-zero-cf"
   dependencies:
     "@cloudflare/vite-plugin": "npm:^1.13.14"
     "@react-native-community/cli": "npm:19.0.0"

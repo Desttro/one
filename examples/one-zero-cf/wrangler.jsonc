@@ -5,7 +5,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "one-zero-cf",
-  "main": "./src/worker/index.ts",
+  "main": "./dist/worker/index.js",
   "compatibility_date": "2025-10-08",
   "compatibility_flags": ["nodejs_compat"],
   "durable_objects": {
@@ -24,6 +24,9 @@
   ],
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "CF_TEST": "test it works!"
   },
   /**
    * Smart Placement
@@ -55,10 +58,10 @@
    * https://developers.cloudflare.com/workers/wrangler/configuration/#service-bindings
    */
   // "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
-  "upload_source_maps": true,
+  // "upload_source_maps": true,
   "assets": {
-    "directory": "./dist/client",
-    "not_found_handling": "single-page-application",
-    "run_worker_first": ["/api/*"]
+    // "directory": "./dist/client",
+    "not_found_handling": "single-page-application"
+    // "run_worker_first": ["/api/*"]
   }
 }

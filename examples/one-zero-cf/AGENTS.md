@@ -29,6 +29,9 @@ Reset data: `yarn docker:start:clean`
 ## One Framework
 
 One is a cross-platform React/React Native framework with Vite integration.
+One is a framework that aims to make web and native development with React and React Native much simpler and faster.
+One builds on Vite to serve both React web and React Native, it also provides file system–based routing, render modes, loaders, middleware, a CLI, Hono, and more.
+To understand more about One, you should search for documentation (`apps/onestack.dev/data/docs/*.mdx`) under the site (`apps/onestack.dev`). This site contains guides, API references, and examples to help you grasp the framework's capabilities and practices.
 
 ### Core Features
 

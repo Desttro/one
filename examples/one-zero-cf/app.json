@@ -1,13 +1,9 @@
 {
   "expo": {
-    "name": "smazone",
-    "slug": "smazone",
+    "name": "one-zero-cf",
+    "slug": "one-zero-cf",
     "version": "1.1.345-1734464750388",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "platforms": ["ios", "android", "web"],
     "ios": {
       "bundleIdentifier": "com.myapp.one-zero"
     }

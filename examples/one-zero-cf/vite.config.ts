@@ -8,7 +8,7 @@ export default {
     one({
       web: {
         defaultRenderMode: 'spa',
-        // deploy: 'vercel',
+        // deploy: 'cloudflare',
       },
     }),
 
@@ -19,7 +19,7 @@ export default {
       outputCSS: './src/tamagui/tamagui.css',
     }),
 
-    // cloudflare({ viteEnvironment: { name: 'ssr' } }),
-    cloudflare(),
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // cloudflare(),
   ],
 } satisfies UserConfig
