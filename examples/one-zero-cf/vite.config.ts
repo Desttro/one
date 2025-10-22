@@ -19,6 +19,7 @@ export default {
       outputCSS: './src/tamagui/tamagui.css',
     }),
 
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    // cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    cloudflare(),
   ],
 } satisfies UserConfig
