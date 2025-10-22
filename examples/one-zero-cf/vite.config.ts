@@ -1,13 +1,14 @@
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
 import type { UserConfig } from 'vite'
-// import { cloudflare } from '@cloudflare/vite-plugin'
+import { cloudflare } from '@cloudflare/vite-plugin'
 
 export default {
   plugins: [
     one({
       web: {
         defaultRenderMode: 'spa',
+        // deploy: 'vercel',
       },
     }),
 
@@ -18,6 +19,6 @@ export default {
       outputCSS: './src/tamagui/tamagui.css',
     }),
 
-    // cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
   ],
 } satisfies UserConfig
