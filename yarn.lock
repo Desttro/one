@@ -23285,6 +23285,51 @@ __metadata:
   languageName: node
   linkType: hard
 
+"one-zero-cf@workspace:examples/one-zero-cf":
+  version: 0.0.0-use.local
+  resolution: "one-zero-cf@workspace:examples/one-zero-cf"
+  dependencies:
+    "@cloudflare/vite-plugin": "npm:^1.13.14"
+    "@react-native-community/cli": "npm:19.0.0"
+    "@react-navigation/native": "npm:~7.1.0"
+    "@rocicorp/zero": "npm:^0.24.2025101500"
+    "@tamagui/config": "npm:^1.132.23"
+    "@tamagui/linear-gradient": "npm:^1.132.23"
+    "@tamagui/lucide-icons": "npm:^1.132.23"
+    "@tamagui/themes": "npm:^1.132.23"
+    "@tamagui/toast": "npm:^1.132.23"
+    "@tamagui/vite-plugin": "npm:^1.132.23"
+    "@tauri-apps/api": "npm:^2"
+    "@tauri-apps/cli": "npm:^2"
+    "@tauri-apps/plugin-deep-link": "npm:^2.0.1"
+    "@tauri-apps/plugin-fs": "npm:^2.2.0"
+    "@tauri-apps/plugin-shell": "npm:^2"
+    "@types/node": "npm:^22.1.0"
+    "@types/pg": "npm:^8.11.11"
+    "@vxrn/better-auth": "npm:1.1.535"
+    "@vxrn/color-scheme": "npm:1.1.535"
+    "@vxrn/emitter": "npm:1.1.535"
+    better-auth: "npm:^1.2.8"
+    expo: "npm:53.0.20"
+    expo-linear-gradient: "npm:~14.1.5"
+    one: "npm:^1.1.535"
+    pg: "npm:^8.13.1"
+    react: "npm:~19.0.0"
+    react-dom: "npm:~19.0.0"
+    react-native: "npm:~0.79.2"
+    react-native-reanimated: "npm:~3.17.4"
+    react-native-safe-area-context: "npm:5.4.0"
+    react-native-screens: "npm:4.10.0"
+    react-native-svg: "npm:15.11.2"
+    react-native-web: "npm:~0.20.0"
+    tamagui: "npm:^1.132.23"
+    tsx: "npm:^4.19.0"
+    typescript: "npm:^5.7.3"
+    vite: "npm:^7.0.1"
+    wrangler: "npm:^4.44.0"
+  languageName: unknown
+  linkType: soft
+
 "one-zero@workspace:examples/one-zero":
   version: 0.0.0-use.local
   resolution: "one-zero@workspace:examples/one-zero"
@@ -26977,51 +27022,6 @@ __metadata:
   checksum: 10/927484aa0b1640fd9473cee3e0a0bcad6fce93fd7bbc18bac9ad0c33686f5d2e2c422fba24b5899c184524af01e11dd2bd051c2bf2b07e47aff8ca72cbfc60d2
   languageName: node
   linkType: hard
-
-"one-zero-cf@workspace:examples/one-zero-cf":
-  version: 0.0.0-use.local
-  resolution: "one-zero-cf@workspace:examples/one-zero-cf"
-  dependencies:
-    "@cloudflare/vite-plugin": "npm:^1.13.14"
-    "@react-native-community/cli": "npm:19.0.0"
-    "@react-navigation/native": "npm:~7.1.0"
-    "@rocicorp/zero": "npm:^0.24.2025101500"
-    "@tamagui/config": "npm:^1.132.23"
-    "@tamagui/linear-gradient": "npm:^1.132.23"
-    "@tamagui/lucide-icons": "npm:^1.132.23"
-    "@tamagui/themes": "npm:^1.132.23"
-    "@tamagui/toast": "npm:^1.132.23"
-    "@tamagui/vite-plugin": "npm:^1.132.23"
-    "@tauri-apps/api": "npm:^2"
-    "@tauri-apps/cli": "npm:^2"
-    "@tauri-apps/plugin-deep-link": "npm:^2.0.1"
-    "@tauri-apps/plugin-fs": "npm:^2.2.0"
-    "@tauri-apps/plugin-shell": "npm:^2"
-    "@types/node": "npm:^22.1.0"
-    "@types/pg": "npm:^8.11.11"
-    "@vxrn/better-auth": "npm:1.1.535"
-    "@vxrn/color-scheme": "npm:1.1.535"
-    "@vxrn/emitter": "npm:1.1.535"
-    better-auth: "npm:^1.2.8"
-    expo: "npm:53.0.20"
-    expo-linear-gradient: "npm:~14.1.5"
-    one: "npm:^1.1.535"
-    pg: "npm:^8.13.1"
-    react: "npm:~19.0.0"
-    react-dom: "npm:~19.0.0"
-    react-native: "npm:~0.79.2"
-    react-native-reanimated: "npm:~3.17.4"
-    react-native-safe-area-context: "npm:5.4.0"
-    react-native-screens: "npm:4.10.0"
-    react-native-svg: "npm:15.11.2"
-    react-native-web: "npm:~0.20.0"
-    tamagui: "npm:^1.132.23"
-    tsx: "npm:^4.19.0"
-    typescript: "npm:^5.7.3"
-    vite: "npm:^7.0.1"
-    wrangler: "npm:^4.44.0"
-  languageName: unknown
-  linkType: soft
 
 "socks-proxy-agent@npm:^8.0.3, socks-proxy-agent@npm:^8.0.5":
   version: 8.0.5
