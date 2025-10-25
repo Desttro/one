@@ -26,6 +26,7 @@ export async function buildPage(
   const render = await getRender(serverEntry)
   const htmlPath = `${path.endsWith('/') ? `${removeTrailingSlash(path)}/index` : path}.html`
   const clientJsPath = join(`dist/client`, clientManifestEntry.file)
+  console.info(`clientJsPath`, clientJsPath)
   const htmlOutPath = toAbsolute(join(staticDir, htmlPath))
   const preloadPath = getPreloadPath(path)
 

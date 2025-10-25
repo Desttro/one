@@ -2,10 +2,7 @@
   "name": "one",
   "version": "1.1.535",
   "license": "BSD-3-Clause",
-  "sideEffects": [
-    "setup.mjs",
-    "setup.js"
-  ],
+  "sideEffects": ["setup.mjs", "setup.js"],
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
@@ -76,15 +73,7 @@
   "source": "src/index.ts",
   "types": "./types/index.d.ts",
   "bin": "run.mjs",
-  "files": [
-    "src",
-    "types",
-    "dist",
-    "vendor",
-    "metro-entry.js",
-    "metro-entry-ctx.js",
-    "LICENSE"
-  ],
+  "files": ["src", "types", "dist", "vendor", "metro-entry.js", "metro-entry-ctx.js", "LICENSE"],
   "scripts": {
     "build": "tamagui-build",
     "check": "yarn depcheck",
@@ -143,7 +132,7 @@
     "ts-pattern": "^5.6.2",
     "tsconfig-paths": "^4",
     "use-latest-callback": "^0.2.3",
-    "vite": "^7.0.1",
+    "vite": "^7.1.12",
     "vite-plugin-barrel": "^0.4.1",
     "vite-tsconfig-paths": "^5.0.1",
     "vxrn": "workspace:*",

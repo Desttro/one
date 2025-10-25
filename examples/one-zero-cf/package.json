@@ -8,7 +8,7 @@
   "scripts": {
     "build:icon": "tauri icon ./src-tauri/icons/icon.png",
     "build:tauri": "tauri build --debug",
-    "build:web": "one build",
+    "build:web": "one build --debug",
     "data:reset": "docker compose down --volumes; rm /tmp/onezero_replica.db",
     "dev": "one dev",
     "dev:android": "one run:android",
@@ -61,9 +61,10 @@
     "@tauri-apps/cli": "^2",
     "@types/node": "^22.1.0",
     "@types/pg": "^8.11.11",
+    "miniflare": "^4.20251011.1",
     "tsx": "^4.19.0",
     "typescript": "^5.7.3",
-    "vite": "^7.0.1",
+    "vite": "^7.1.12",
     "wrangler": "^4.44.0"
   },
   "publishConfig": {

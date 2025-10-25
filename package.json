@@ -81,6 +81,9 @@
     "vitepress": "^1.1.4",
     "zod": "3.25.67"
   },
+  "resolutions": {
+    "vite": "^7.1.12"
+  },
   "packageManager": "yarn@4.9.2",
   "engines": {
     "node": "20.17.0",

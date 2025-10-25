@@ -4,6 +4,13 @@ import type { PluginOption, UserConfig } from 'vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
 
 export default {
+  // environments: {
+  //   one_zero_cf: {
+  //     define: {
+  //       __APP_VERSION__: JSON.stringify('v1.0.0'),
+  //     },
+  //   },
+  // },
   plugins: [
     one({
       web: {
@@ -20,26 +27,16 @@ export default {
       outputCSS: './src/tamagui/tamagui.css',
     }),
 
-    // cloudflare({ viteEnvironment: { name: 'ssr' } }),
-    // cloudflare(),
-
     ...(process.env.NODE_ENV === 'production'
       ? ([
-          cloudflare({
-            viteEnvironment: {
-              name: 'ssr',
-            },
-          }),
+          cloudflare(
+            //   {
+            //   viteEnvironment: {
+            //     name: 'ssr',
+            //   },
+            // }
+          ),
         ] as PluginOption[])
       : []),
   ],
-
-  environments: {
-    ssr: {
-      // Volitelně: Definuj globals pro Worker env, např. verzi app
-      define: {
-        __APP_VERSION__: JSON.stringify('1.0.0'),
-      },
-    },
-  },
 } satisfies UserConfig
