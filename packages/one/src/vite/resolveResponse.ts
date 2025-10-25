@@ -1,5 +1,6 @@
 import { isResponse } from '../utils/isResponse'
 import { asyncHeadersCache, mergeHeaders, runWithAsyncLocalContext } from './one-server-only'
+import type { PlatformContext } from '../types'
 
 export function resolveResponse(getResponse: () => Promise<Response>) {
   return new Promise<Response>((res, rej) => {
@@ -24,7 +25,8 @@ export function resolveAPIEndpoint(
   // this is the result of importing the file:
   runEndpoint: () => Promise<any>,
   request: Request,
-  params: Record<string, string>
+  params: Record<string, string>,
+  platformContext?: PlatformContext
 ) {
   return resolveResponse(async () => {
     const imported = await runEndpoint()
@@ -34,7 +36,7 @@ export function resolveAPIEndpoint(
       console.warn(`No handler found for request ${requestType}`)
       return
     }
-    return await handler(request, { params })
+    return await handler(request, { params, platform: platformContext })
   })
 }
 

@@ -24,6 +24,7 @@ import { buildVercelOutputDirectory } from '../vercel/build/buildVercelOutputDir
 import { getRouterRootFromOneOptions } from '../utils/getRouterRootFromOneOptions'
 
 import { buildPage } from './buildPage'
+import { buildCloudflareWorker } from '../cloudflare/buildCloudflareWorker'
 import { checkNodeVersion } from './checkNodeVersion'
 import { labelProcess } from './label-process'
 import { getPathnameFromFilePath } from '../utils/getPathnameFromFilePath'
@@ -192,13 +193,26 @@ export async function build(args: {
     return output as RollupOutput
   }
 
+  const apiRouteModules: Record<string, string> = {}
+  const builtMiddlewares: Record<string, string> = {}
+
   let apiOutput: RollupOutput | null = null
   if (manifest.apiRoutes.length) {
     console.info(`\n 🔨 build api routes\n`)
     apiOutput = await buildCustomRoutes('api', manifest.apiRoutes)
-  }
 
-  const builtMiddlewares: Record<string, string> = {}
+    if (apiOutput) {
+      const outChunks = apiOutput.output.filter((x) => x.type === 'chunk')
+      for (const route of manifest.apiRoutes) {
+        const absoluteRoot = resolve(process.cwd(), options.root)
+        const fullPath = join(absoluteRoot, routerRoot, route.file)
+        const chunk = outChunks.find((output) => output.type === 'chunk' && output.facadeModuleId === fullPath)
+        if (chunk) {
+          apiRouteModules[route.file] = join('dist', 'api', chunk.fileName)
+        }
+      }
+    }
+  }
 
   if (manifest.middlewareRoutes.length) {
     console.info(`\n 🔨 build middlewares\n`)
@@ -496,6 +510,7 @@ export async function build(args: {
   const buildInfoForWriting: One.BuildInfo = {
     oneOptions,
     routeToBuildInfo,
+    apiRouteModules,
     pathToRoute,
     manifest: {
       pageRoutes: manifest.pageRoutes.map(createBuildManifestRoute),
@@ -531,29 +546,15 @@ export async function build(args: {
       break
     }
 
-    //     case 'cloudflare': {
-    //       await FSExtra.writeFile(
-    //         join(options.root, 'dist', 'worker.js'),
-    //         `import { serve } from 'one/serve-worker'
+    case 'cloudflare': {
+      await buildCloudflareWorker({
+        buildInfo: buildInfoForWriting,
+        projectRoot: process.cwd(),
+        postBuildLogs,
+      })
+      break
+    }
 
-    // const buildInfo = ${JSON.stringify(buildInfoForWriting)}
-
-    // const handler = await serve(buildInfo)
-
-    // export default {
-    //   fetch: handler.fetch,
-    // }`
-    //       )
-
-    //       await FSExtra.writeFile(
-    //         join(options.root, 'dist', 'wrangler.toml'),
-    //         `assets = { directory = "client" }
-    // compatibility_date = "2024-12-05"
-    // `
-    //       )
-
-    //       break
-    //     }
   }
 
   if (process.env.VXRN_ANALYZE_BUNDLE) {

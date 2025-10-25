@@ -27990,6 +27990,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "test-cloudflare@workspace:tests/test-cloudflare"
   dependencies:
+    "@cloudflare/vite-plugin": "npm:^1.13.14"
     "@cloudflare/vitest-pool-workers": "npm:^0.5.38"
     "@cloudflare/workers-types": "npm:^4.20241216.0"
     "@react-navigation/native": "npm:~7.1.0"

@@ -1,6 +1,6 @@
 import type { RouteNode } from './router/Route';
 import type { RouteInfoCompiled } from './server/createRoutesManifest';
-import type { LoaderProps } from './types';
+import type { LoaderProps, PlatformContext } from './types';
 import type { RouteInfo } from './vite/types';
 export type RequestHandlers = {
     handlePage?: (props: RequestHandlerProps) => Promise<any>;
@@ -13,12 +13,13 @@ type RequestHandlerProps<RouteExtraProps extends Object = {}> = {
     route: RouteInfo<string> & RouteExtraProps;
     url: URL;
     loaderProps?: LoaderProps;
+    platform?: PlatformContext;
 };
 type RequestHandlerResponse = null | string | Response;
-export declare function runMiddlewares(handlers: RequestHandlers, request: Request, route: RouteInfo, getResponse: () => Promise<Response>): Promise<Response>;
-export declare function resolveAPIRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled): Promise<Response>;
-export declare function resolveLoaderRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled): Promise<Response>;
-export declare function resolvePageRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled): Promise<Response>;
+export declare function runMiddlewares(handlers: RequestHandlers, request: Request, route: RouteInfo, getResponse: () => Promise<Response>, platformContext?: PlatformContext): Promise<Response>;
+export declare function resolveAPIRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled, platformContext?: PlatformContext): Promise<Response>;
+export declare function resolveLoaderRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled, platformContext?: PlatformContext): Promise<Response>;
+export declare function resolvePageRoute(handlers: RequestHandlers, request: Request, url: URL, route: RouteInfoCompiled, platformContext?: PlatformContext): Promise<Response>;
 export declare function getURLfromRequestURL(request: Request): URL;
 export declare function compileManifest(manifest: {
     pageRoutes: RouteInfo[];

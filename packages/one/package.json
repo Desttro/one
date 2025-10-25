@@ -30,6 +30,11 @@
       "import": "./dist/esm/serve-worker.mjs",
       "require": "./dist/cjs/serve-worker.js"
     },
+    "./cloudflare": {
+      "types": "./types/cloudflare/index.d.ts",
+      "import": "./dist/esm/cloudflare/index.mjs",
+      "require": "./dist/cjs/cloudflare/index.js"
+    },
     "./setup": {
       "types": "./types/setup.d.ts",
       "import": "./dist/esm/setup.mjs",

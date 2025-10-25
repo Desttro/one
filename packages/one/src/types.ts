@@ -9,10 +9,23 @@ export type Endpoint = (req: Request) => Response | string | Object | null
 
 export type RenderApp = (props: RenderAppProps) => Promise<string>
 
+export type PlatformContext = {
+  env?: Record<string, unknown>
+  executionCtx?: unknown
+  /**
+   * Raw platform-specific request context. Cloudflare Workers expose bindings on `env` and
+   * the execution context via Hono, so we keep this generic for future platforms.
+   */
+  requestContext?: unknown
+  cf?: unknown
+  [key: string]: unknown
+}
+
 export type LoaderProps<Params extends Object = Record<string, string | string[]>> = {
   path: string
   params: Params
   request?: Request
+  platform?: PlatformContext
 }
 
 export type RenderAppProps = {

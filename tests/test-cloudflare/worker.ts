@@ -1,10 +1,9 @@
 import { createRequestHandler } from 'one/cloudflare'
 
 const handleFetch = createRequestHandler(() => import('virtual:one/server-build'))
-console.log('handleFetch', handleFetch)
 
 export default {
-  async fetch(request: Request, env: unknown, ctx: unknown): Promise<Response> {
+  async fetch(request: Request, env: unknown, ctx: unknown) {
     return handleFetch(request, env, ctx)
   },
-} satisfies ExportedHandler<Env>
+}

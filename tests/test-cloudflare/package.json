@@ -19,6 +19,7 @@
     "react-native-screens": "4.10.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.13.14",
     "@cloudflare/vitest-pool-workers": "^0.5.38",
     "@cloudflare/workers-types": "^4.20241216.0",
     "vite": "^7.1.12",

@@ -10,15 +10,26 @@ import {
   runMiddlewares,
   type RequestHandlers,
 } from '../createHandleRequest'
-import type { RenderAppProps } from '../types'
+import type { PlatformContext, RenderAppProps } from '../types'
 import { getPathFromLoaderPath } from '../utils/cleanUrl'
 import { toAbsolute } from '../utils/toAbsolute'
-import type { One } from '../vite/types'
+import type { One, RouteInfo } from '../vite/types'
 import type { RouteInfoCompiled } from './createRoutesManifest'
 import { serveStaticAssets } from 'vxrn'
 import { isRolldown } from '../utils/isRolldown'
 
-export async function oneServe(oneOptions: One.PluginOptions, buildInfo: One.BuildInfo, app: Hono) {
+export type ModuleLoaders = {
+  loadRouteModule?: (route: RouteInfo<string>) => Promise<any>
+  loadAPIModule?: (route: RouteInfo<string>) => Promise<any>
+  loadMiddlewareModule?: (contextKey: string) => Promise<any>
+}
+
+export async function oneServe(
+  oneOptions: One.PluginOptions,
+  buildInfo: One.BuildInfo,
+  app: Hono,
+  moduleLoaders: ModuleLoaders = {}
+) {
   const { resolveAPIRoute, resolveLoaderRoute, resolvePageRoute } = await import(
     '../createHandleRequest'
   )
@@ -46,6 +57,7 @@ export async function oneServe(oneOptions: One.PluginOptions, buildInfo: One.Bui
   }
 
   const { routeToBuildInfo, routeMap } = buildInfo as One.BuildInfo
+  const apiRouteModuleMap = buildInfo.apiRouteModules || {}
 
   const serverOptions = {
     ...oneOptions,
@@ -60,21 +72,51 @@ export async function oneServe(oneOptions: One.PluginOptions, buildInfo: One.Bui
 
   const useRolldown = await isRolldown()
 
-  const requestHandlers: RequestHandlers = {
-    async handleAPI({ route }) {
+  const loadRouteModule =
+    moduleLoaders.loadRouteModule ??
+    (async (route: RouteInfo<string>) => {
+      const build = routeToBuildInfo[route.file]
+      if (!build?.serverJsPath) {
+        throw new Error(`No server bundle found for route ${route.file}`)
+      }
+      return await import(toAbsolute(build.serverJsPath))
+    })
+
+  const loadAPIModule =
+    moduleLoaders.loadAPIModule ??
+    (async (route: RouteInfo<string>) => {
+      const mappedPath = apiRouteModuleMap[route.file]
+      if (mappedPath) {
+        return await import(toAbsolute(mappedPath))
+      }
+
       const fileName = useRolldown
-        ? route.page.slice(1) // rolldown doesn't replace brackets
-        : route.page.slice(1).replace(/\[/g, '_').replace(/\]/g, '_') // esbuild replaces brackets with underscores
+        ? route.page.slice(1)
+        : route.page
+            .slice(1)
+            .replace(/\[/g, '_')
+            .replace(/\]/g, '_')
       const apiFile = join(process.cwd(), 'dist', 'api', fileName + (apiCJS ? '.cjs' : '.js'))
       return await import(apiFile)
+    })
+
+  const loadMiddlewareModule =
+    moduleLoaders.loadMiddlewareModule ??
+    (async (contextKey: string) => {
+      return await import(toAbsolute(contextKey))
+    })
+
+  const requestHandlers: RequestHandlers = {
+    async handleAPI({ route }) {
+      return await loadAPIModule(route as RouteInfo<string>)
     },
 
     async loadMiddleware(route) {
-      return await import(toAbsolute(route.contextKey))
+      return await loadMiddlewareModule(route.contextKey)
     },
 
     async handleLoader({ request, route, url, loaderProps }) {
-      const exports = await import(toAbsolute(join('./', 'dist/server', route.file)))
+      const exports = await loadRouteModule(route as RouteInfo<string>)
 
       const { loader } = exports
 
@@ -100,7 +142,7 @@ export async function oneServe(oneOptions: One.PluginOptions, buildInfo: One.Bui
         }
 
         try {
-          const exported = await import(toAbsolute(buildInfo.serverJsPath))
+          const exported = await loadRouteModule(route as RouteInfo<string>)
           const loaderData = await exported.loader?.(loaderProps)
           const preloads = buildInfo.preloads
 
@@ -144,6 +186,12 @@ url: ${url}`)
     return async (context, next) => {
       try {
         const request = context.req.raw
+        const platformContext: PlatformContext = {
+          env: context.env as any,
+          executionCtx: (context as any).executionCtx,
+          requestContext: context,
+          cf: (request as any)?.cf,
+        }
 
         if (route.page.endsWith('/+not-found') || Reflect.ownKeys(route.routeKeys).length > 0) {
           // Static assets should have the highest priority - which is the behavior of the dev server.
@@ -156,7 +204,8 @@ url: ${url}`)
               requestHandlers,
               request,
               route,
-              async () => staticAssetResponse
+              async () => staticAssetResponse,
+              platformContext
             )
           }
         }
@@ -175,17 +224,23 @@ url: ${url}`)
           if (url.pathname.endsWith(LOADER_JS_POSTFIX_UNCACHED)) {
             const originalUrl = getPathFromLoaderPath(url.pathname)
             const finalUrl = new URL(originalUrl, url.origin)
-            return resolveLoaderRoute(requestHandlers, request, finalUrl, route)
+            return resolveLoaderRoute(
+              requestHandlers,
+              request,
+              finalUrl,
+              route,
+              platformContext
+            )
           }
 
           switch (route.type) {
             case 'api': {
-              return resolveAPIRoute(requestHandlers, request, url, route)
+              return resolveAPIRoute(requestHandlers, request, url, route, platformContext)
             }
             case 'ssg':
             case 'spa':
             case 'ssr': {
-              return resolvePageRoute(requestHandlers, request, url, route)
+              return resolvePageRoute(requestHandlers, request, url, route, platformContext)
             }
           }
         })()

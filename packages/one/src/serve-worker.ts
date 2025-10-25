@@ -1,12 +1,16 @@
 import { Hono } from 'hono'
-import { createProdServer } from 'vxrn/serve'
-import { oneServe } from './server/oneServe'
+import { oneServe, type ModuleLoaders } from './server/oneServe'
 import { setServerGlobals } from './server/setServerGlobals'
 import { setupBuildInfo } from './server/setupBuildOptions'
 import { ensureExists } from './utils/ensureExists'
 import type { One } from './vite/types'
 
-export async function serve(buildInfo: One.BuildInfo) {
+type ServeWorkerOptions = {
+  disableStaticServer?: boolean
+  moduleLoaders?: ModuleLoaders
+}
+
+export async function serve(buildInfo: One.BuildInfo, options: ServeWorkerOptions = {}) {
   setupBuildInfo(buildInfo)
   ensureExists(buildInfo.oneOptions)
   setServerGlobals()
@@ -15,9 +19,12 @@ export async function serve(buildInfo: One.BuildInfo) {
 
   const app = new Hono()
 
-  await createProdServer(app, serverOptions)
+  if (!options.disableStaticServer) {
+    const { createProdServer } = await import('vxrn/serve')
+    await createProdServer(app, serverOptions)
+  }
 
-  await oneServe(buildInfo.oneOptions, buildInfo, app)
+  await oneServe(buildInfo.oneOptions, buildInfo, app, options.moduleLoaders)
 
   return app
 }

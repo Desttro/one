@@ -1,6 +1,6 @@
 import { env } from 'cloudflare:test'
 import { describe, expect, test } from 'vitest'
-import worker from './dist/worker'
+import worker from './dist/test_cloudflare/index.js'
 
 describe('Cloudflare Worker', () => {
   test('GET /posts', async () => {

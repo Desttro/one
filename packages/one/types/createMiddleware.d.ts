@@ -1,6 +1,8 @@
+import type { PlatformContext } from './types';
 type MaybeResponse = Response | void | null;
 type RequestResponse = MaybeResponse | Promise<MaybeResponse>;
 export interface MiddlewareContext {
+    platform?: PlatformContext;
 }
 export type Middleware = (props: {
     request: Request;

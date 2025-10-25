@@ -2,7 +2,7 @@ import { LOADER_JS_POSTFIX_UNCACHED } from './constants'
 import type { Middleware, MiddlewareContext } from './createMiddleware'
 import type { RouteNode } from './router/Route'
 import type { RouteInfoCompiled } from './server/createRoutesManifest'
-import type { LoaderProps } from './types'
+import type { LoaderProps, PlatformContext } from './types'
 import { getPathFromLoaderPath } from './utils/cleanUrl'
 import { isResponse } from './utils/isResponse'
 import { getManifest } from './vite/getManifest'
@@ -21,6 +21,7 @@ type RequestHandlerProps<RouteExtraProps extends Object = {}> = {
   route: RouteInfo<string> & RouteExtraProps
   url: URL
   loaderProps?: LoaderProps
+  platform?: PlatformContext
 }
 
 type RequestHandlerResponse = null | string | Response
@@ -29,7 +30,8 @@ export async function runMiddlewares(
   handlers: RequestHandlers,
   request: Request,
   route: RouteInfo,
-  getResponse: () => Promise<Response>
+  getResponse: () => Promise<Response>,
+  platformContext?: PlatformContext
 ): Promise<Response> {
   const middlewares = route.middlewares
 
@@ -40,7 +42,9 @@ export async function runMiddlewares(
     throw new Error(`No middleware handler configured`)
   }
 
-  const context: MiddlewareContext = {}
+  const context: MiddlewareContext = {
+    platform: platformContext,
+  }
 
   async function dispatch(index: number): Promise<Response> {
     const middlewareModule = middlewares![index]
@@ -82,7 +86,8 @@ export async function resolveAPIRoute(
   handlers: RequestHandlers,
   request: Request,
   url: URL,
-  route: RouteInfoCompiled
+  route: RouteInfoCompiled,
+  platformContext?: PlatformContext
 ) {
   const { pathname } = url
   const params = getRouteParams(pathname, route)
@@ -97,10 +102,13 @@ export async function resolveAPIRoute(
           loaderProps: {
             path: pathname,
             params,
+            platform: platformContext,
           },
+          platform: platformContext,
         }),
       request,
-      params || {}
+      params || {},
+      platformContext
     )
   } catch (err) {
     if (isResponse(err)) {
@@ -125,7 +133,8 @@ export async function resolveLoaderRoute(
   handlers: RequestHandlers,
   request: Request,
   url: URL,
-  route: RouteInfoCompiled
+  route: RouteInfoCompiled,
+  platformContext?: PlatformContext
 ) {
   return await runMiddlewares(handlers, request, route, async () => {
     return await resolveResponse(async () => {
@@ -141,7 +150,9 @@ export async function resolveLoaderRoute(
             path: url.pathname,
             request: route.type === 'ssr' ? request : undefined,
             params: getLoaderParams(url, route),
+            platform: platformContext,
           },
+          platform: platformContext,
         })
 
         return new Response(loaderResponse, {
@@ -158,14 +169,15 @@ export async function resolveLoaderRoute(
         throw err
       }
     })
-  })
+  }, platformContext)
 }
 
 export async function resolvePageRoute(
   handlers: RequestHandlers,
   request: Request,
   url: URL,
-  route: RouteInfoCompiled
+  route: RouteInfoCompiled,
+  platformContext?: PlatformContext
 ) {
   const { pathname, search } = url
 
@@ -180,9 +192,11 @@ export async function resolvePageRoute(
           // Ensure SSR loaders receive the original request
           request: route.type === 'ssr' ? request : undefined,
           params: getLoaderParams(url, route),
+          platform: platformContext,
         },
+        platform: platformContext,
       })
-    })
+    }, platformContext)
     return resolved
   })
 }

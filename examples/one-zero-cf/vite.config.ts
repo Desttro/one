@@ -1,22 +1,14 @@
 import { tamaguiPlugin } from '@tamagui/vite-plugin'
 import { one } from 'one/vite'
-import type { PluginOption, UserConfig } from 'vite'
+import type { UserConfig } from 'vite'
 import { cloudflare } from '@cloudflare/vite-plugin'
 
 export default {
-  // environments: {
-  //   one_zero_cf: {
-  //     define: {
-  //       __APP_VERSION__: JSON.stringify('v1.0.0'),
-  //     },
-  //   },
-  // },
   plugins: [
     one({
       web: {
         defaultRenderMode: 'spa',
-        // deploy: 'cloudflare',
-        deploy: 'node',
+        deploy: 'cloudflare',
       },
     }),
 
@@ -27,16 +19,6 @@ export default {
       outputCSS: './src/tamagui/tamagui.css',
     }),
 
-    ...(process.env.NODE_ENV === 'production'
-      ? ([
-          cloudflare(
-            //   {
-            //   viteEnvironment: {
-            //     name: 'ssr',
-            //   },
-            // }
-          ),
-        ] as PluginOption[])
-      : []),
+    cloudflare(),
   ],
 } satisfies UserConfig

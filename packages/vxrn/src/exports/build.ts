@@ -1,6 +1,6 @@
 import FSExtra from 'fs-extra'
 import { rm } from 'node:fs/promises'
-import { sep } from 'node:path'
+import { join, sep } from 'node:path'
 import type { OutputAsset, OutputChunk, RollupOutput } from 'rollup'
 import {
   loadConfigFromFile,
@@ -314,6 +314,7 @@ export const build = async (optionsIn: VXRNOptions, buildArgs: BuildArgs = {}) =
   }
 
   if (serverOptions !== false) {
+    await ensureClientManifestRoot()
     clientManifest = await FSExtra.readJSON('dist/client/.vite/manifest.json')
 
     // temp fix - react native web is importing non-existent react 19 apis
@@ -343,4 +344,28 @@ export const build = async (optionsIn: VXRNOptions, buildArgs: BuildArgs = {}) =
     webBuildConfig,
     clientManifest,
   }
+}
+
+async function ensureClientManifestRoot() {
+  const rootManifestPath = join('dist', 'client', '.vite', 'manifest.json')
+  const nestedManifestPath = join('dist', 'client', 'client', '.vite', 'manifest.json')
+
+  if (await FSExtra.pathExists(rootManifestPath)) {
+    return
+  }
+
+  if (!(await FSExtra.pathExists(nestedManifestPath))) {
+    return
+  }
+
+  const nestedClientDir = join('dist', 'client', 'client')
+  const clientDir = join('dist', 'client')
+
+  const entries = await FSExtra.readdir(nestedClientDir)
+  for (const entry of entries) {
+    const from = join(nestedClientDir, entry)
+    const to = join(clientDir, entry)
+    await FSExtra.move(from, to, { overwrite: true })
+  }
+  await FSExtra.rm(nestedClientDir, { recursive: true, force: true })
 }
